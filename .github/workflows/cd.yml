@@ -1,0 +1,19 @@
+name: cd
+
+on:
+  repository_dispatch:
+    types: [delivery]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Test Dispatch Payload
+        env:
+          IMAGE: ${{ github.event.client_payload.image }}
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          echo "image: $IMAGE"
+          echo "version: $VERSION"
