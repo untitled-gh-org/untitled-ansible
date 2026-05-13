@@ -93,9 +93,6 @@
   community.docker.docker_image_build:
     name: "{{ keycloak_image }}"
     path: "{{ keycloak_build_context }}"
-    platform:
-      - linux/amd64
-      - linux/arm64/v8
 
 - name: Start keycloak container
   community.docker.docker_container:
