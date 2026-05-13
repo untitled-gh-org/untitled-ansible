@@ -126,7 +126,6 @@
     env:
       BFF_HOME_URL: "https://{{ domain_name }}"
       BFF_CLIENT_URL: "https://bff.{{ domain_name }}"
-      BFF_LOGIN_URL: "https://bff.{{ domain_name }}/oauth2/authorization/untitled-bff"
       UNTITLED_API_URI: "http://api:8082"
       BFF_SESSION_COOKIE_DOMAIN: "{{ domain_name }}"
       BFF_SESSION_COOKIE_SECURE: "true"
@@ -137,7 +136,7 @@
       VIRTUAL_PORT: "8081"
       LETSENCRYPT_HOST: "bff.{{ domain_name }}"
     healthcheck:
-      test: [ "CMD", "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -155,7 +154,7 @@
     env:
       KEYCLOAK_ISSUER_URI: "{{ keycloak_issuer_uri }}"
     healthcheck:
-      test: [ "CMD", "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 3
