@@ -68,13 +68,63 @@
     exposed_ports:
       - 5432
     env:
-      POSTGRES_USER: keycloak
+      POSTGRES_USER: "keycloak"
       POSTGRES_PASSWORD: "{{ vault.db_password }}"
-      POSTGRES_DB: keycloak
+      POSTGRES_DB: "keycloak"
     volumes:
       - db-data:/var/lib/postgresql
     healthcheck:
       test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+- name: Create keycloak docker context dir
+  ansible.builtin.file:
+    path: "{{ keycloak_build_context }}"
+    state: directory
+
+- name: Copy keycloak/Dockerfile
+  ansible.builtin.copy:
+    src: keycloak/Dockerfile
+    dest: "{{ keycloak_build_context }}/Dockerfile"
+
+- name: Build keycloak image
+  community.docker.docker_image_build:
+    name: "{{ keycloak_image }}"
+    path: "{{ keycloak_build_context }}"
+    platform:
+      - linux/amd64
+      - linux/arm64/v8
+
+- name: Start keycloak container
+  community.docker.docker_container:
+    name: keycloak
+    image: "{{ keycloak_image }}"
+    command: start --optimized
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: private
+    exposed_ports:
+      - 8080
+    env:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ vault.keycloak_admin_password }}"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME: "https://auth.spotfuckingify.com"
+      KC_PROXY_HEADERS: "xforwarded"
+      KC_DB: "postgres"
+      KC_DB_URL: "jdbc:postgresql://db:5432/keycloak"
+      KC_DB_USERNAME: "keycloak"
+      KC_DB_PASSWORD: "{{ vault.db_password }}"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      VIRTUAL_HOST: "auth.spotfuckingify.com"
+      VIRTUAL_PORT: "8080"
+      LETSENCRYPT_HOST: "auth.spotfuckingify.com"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c \"exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep 200 <&3\"" ]
       interval: 10s
       timeout: 5s
       retries: 3

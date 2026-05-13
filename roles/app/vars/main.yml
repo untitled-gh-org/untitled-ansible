@@ -1,2 +1,4 @@
 ---
 nguyen_sp_image: ghcr.io/nguyennt1103/nguyen-sp:latest
+keycloak_build_context: "/home/{{ ansible_user }}/keycloak"
+keycloak_image: untitled/keycloak:latest
