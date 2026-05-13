@@ -4,5 +4,5 @@ keycloak_issuer_uri: "https://auth.{{ domain_name }}/realms/untitled-bff"
 keycloak_build_context: "/home/{{ ansible_user }}/keycloak"
 keycloak_image: untitled/keycloak:latest
 bff_image: ghcr.io/untitled-gh-org/untitled-bff:0d3b2b286f0d02a938bb8b8b888d9e17ddf76724
-api_image: ghcr.io/untitled-gh-org/untitled-api:latest
+api_image: ghcr.io/untitled-gh-org/untitled-api:0e7cc87c947d60285b248567b6554ecd24bce80b
 web_image: ghcr.io/untitled-gh-org/untitled-web:latest
