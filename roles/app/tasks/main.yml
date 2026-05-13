@@ -49,5 +49,5 @@
     exposed_ports:
       - 80
     env:
-      - VIRTUAL_HOST: "sp.spotfuckingify.com"
-      - LETSENCRYPT_HOST: "sp.spotfuckingify.com"
+      VIRTUAL_HOST: "sp.spotfuckingify.com"
+      LETSENCRYPT_HOST: "sp.spotfuckingify.com"
