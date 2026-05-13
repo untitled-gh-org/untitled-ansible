@@ -30,7 +30,7 @@
 # Register the official Docker APT repository as a package source
 - name: Add Docker Repository
   ansible.builtin.apt_repository:
-    repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
     state: present
 
 # Install the Docker CE package from the Docker repository
@@ -39,11 +39,6 @@
     name: docker-ce
     state: latest
     update_cache: true
-
-# Install the Python Docker SDK so Ansible can communicate with Docker
-- name: Install Docker Module for Python
-  ansible.builtin.pip:
-    name: docker
 
 # Install Docker Compose v2 as an APT plugin (replaces standalone binary)
 - name: Install Docker Compose plugin
