@@ -10,4 +10,4 @@ bff_registration_id: untitled-bff
 
 bff_image: ghcr.io/untitled-gh-org/untitled-bff:a87c1194b677791468784147bda80b337669fded
 api_image: ghcr.io/untitled-gh-org/untitled-api:0e7cc87c947d60285b248567b6554ecd24bce80b
-web_image: ghcr.io/untitled-gh-org/untitled-web:c4f3afbdad619524b523fba40824f1c2139b0a4c
+web_image: ghcr.io/untitled-gh-org/untitled-web:e766c6d8fd743c0335ebbe3a16e4eae977d23cb1
