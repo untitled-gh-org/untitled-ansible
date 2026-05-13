@@ -1,0 +1,42 @@
+---
+- name: Start nginx-proxy container
+  community.docker.docker_container:
+    name: nginx-proxy
+    image: nginxproxy/nginx-proxy:1.10
+    restart_policy: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - public
+      - private
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+- name: Start acme-companion container
+  community.docker.docker_container:
+    name: acme-companion
+    image: nginxproxy/acme-companion:2.6
+    restart_policy: unless-stopped
+    networks:
+      - public
+      - private
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy
+
+- name: Start nguyen-sp container
+  community.docker.docker_container:
+    name: nguyen-sp
+    image: ghcr.io/nguyennt1103/nguyen-sp:latest
+    restart_policy: unless-stopped
+    networks:
+      - private
+    exposed_ports:
+      - 80
+    env:
+      - VIRTUAL_HOST: sp.spotfuckingify.com
+      - LETSENCRYPT_HOST: sp.spotfuckingify.com
