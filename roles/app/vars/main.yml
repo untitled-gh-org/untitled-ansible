@@ -1,4 +1,8 @@
 ---
-nguyen_sp_image: ghcr.io/nguyennt1103/nguyen-sp:latest
+domain_name: spotfuckingify.com
+keycloak_issuer_uri: "https://auth.{{ domain_name }}/realms/untitled-bff"
 keycloak_build_context: "/home/{{ ansible_user }}/keycloak"
 keycloak_image: untitled/keycloak:latest
+bff_image: ghcr.io/untitled-gh-org/untitled-bff:latest
+api_image: ghcr.io/untitled-gh-org/untitled-api:latest
+web_image: ghcr.io/untitled-gh-org/untitled-web:latest

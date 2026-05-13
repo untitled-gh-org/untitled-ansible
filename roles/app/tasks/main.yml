@@ -44,19 +44,6 @@
     volumes_from:
       - nginx-proxy
 
-- name: Start nguyen-sp container
-  community.docker.docker_container:
-    name: nguyen-sp
-    image: "{{ nguyen_sp_image }}"
-    restart_policy: unless-stopped
-    networks:
-      - name: private
-    exposed_ports:
-      - 80
-    env:
-      VIRTUAL_HOST: "sp.spotfuckingify.com"
-      LETSENCRYPT_HOST: "sp.spotfuckingify.com"
-
 - name: Start postgres container
   community.docker.docker_container:
     name: db
@@ -109,7 +96,7 @@
       KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ vault.keycloak_admin_password }}"
       KC_HTTP_ENABLED: "true"
-      KC_HOSTNAME: "https://auth.spotfuckingify.com"
+      KC_HOSTNAME: "https://auth.{{ domain_name }}"
       KC_PROXY_HEADERS: "xforwarded"
       KC_DB: "postgres"
       KC_DB_URL: "jdbc:postgresql://db:5432/keycloak"
@@ -117,11 +104,71 @@
       KC_DB_PASSWORD: "{{ vault.db_password }}"
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
-      VIRTUAL_HOST: "auth.spotfuckingify.com"
+      VIRTUAL_HOST: "auth.{{ domain_name }}"
       VIRTUAL_PORT: "8080"
-      LETSENCRYPT_HOST: "auth.spotfuckingify.com"
+      LETSENCRYPT_HOST: "auth.{{ domain_name }}"
     healthcheck:
       test: [ "CMD-SHELL", "bash -c \"exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep 200 <&3\"" ]
       interval: 10s
       timeout: 5s
       retries: 3
+
+- name: Start bff container
+  community.docker.docker_container:
+    name: bff
+    image: "{{ bff_image }}"
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: private
+    exposed_ports:
+      - 8081
+    env:
+      BFF_HOME_URL: "https://{{ domain_name }}"
+      BFF_CLIENT_URL: "https://bff.{{ domain_name }}"
+      BFF_LOGIN_URL: "https://bff.{{ domain_name }}/oauth2/authorization/untitled-bff"
+      UNTITLED_API_URI: "http://api:8082"
+      BFF_SESSION_COOKIE_DOMAIN: "{{ domain_name }}"
+      BFF_SESSION_COOKIE_SECURE: "true"
+      KEYCLOAK_ISSUER_URI: "{{ keycloak_issuer_uri }}"
+      KEYCLOAK_CLIENT_ID: "{{ vault.keycloak_client_id }}"
+      KEYCLOAK_CLIENT_SECRET: "{{ vault.keycloak_client_secret }}"
+      VIRTUAL_HOST: "bff.{{ domain_name }}"
+      VIRTUAL_PORT: "8081"
+      LETSENCRYPT_HOST: "bff.{{ domain_name }}"
+    healthcheck:
+      test: [ "CMD", "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+- name: Start api container
+  community.docker.docker_container:
+    name: api
+    image: "{{ api_image }}"
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: private
+    exposed_ports:
+      - 8082
+    env:
+      KEYCLOAK_ISSUER_URI: "{{ keycloak_issuer_uri }}"
+    healthcheck:
+      test: [ "CMD", "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+- name: Start web container
+  community.docker.docker_container:
+    name: web
+    image: "{{ web_image }}"
+    restart_policy: unless-stopped
+    networks:
+      - name: private
+    exposed_ports:
+      - 80
+    env:
+      VIRTUAL_HOST: "{{ domain_name }}"
+      LETSENCRYPT_HOST: "{{ domain_name }}"
