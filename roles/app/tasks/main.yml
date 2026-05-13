@@ -1,4 +1,7 @@
 ---
+- name: Stop all docker containers 
+  shell: docker stop $(docker ps -aq)
+
 - name: Create public network
   community.docker.docker_network:
     name: public
