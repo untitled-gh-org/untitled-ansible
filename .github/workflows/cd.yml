@@ -50,4 +50,4 @@ jobs:
           umask 077
           printf '%s' "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault-password
           
-          ansible-playbook playbook.yml
+          ansible-playbook playbook.yml --vault-password-file .vault-password
