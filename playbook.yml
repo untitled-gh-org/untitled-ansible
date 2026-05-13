@@ -1,0 +1,7 @@
+---
+- hosts: host1
+  become: true
+
+  roles:
+    - common
+    - app
