@@ -42,7 +42,7 @@
 - name: Start nguyen-sp container
   community.docker.docker_container:
     name: nguyen-sp
-    image: ghcr.io/nguyennt1103/nguyen-sp:latest
+    image: "{{ nguyen_sp_image }}"
     restart_policy: unless-stopped
     networks:
       - name: private
