@@ -12,17 +12,32 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      IMAGE: ${{ github.event.client_payload.image }}
+      VERSION: ${{ github.event.client_payload.version }}
+      APP_VARS_PATH: roles/app/vars/main.yml
     steps:
-      - name: Test Dispatch Payload
-        env:
-          IMAGE: ${{ github.event.client_payload.image }}
-          VERSION: ${{ github.event.client_payload.version }}
-        run: |
-          echo "image: $IMAGE"
-          echo "version: $VERSION"
-
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Update image version
+        if: github.event_name == 'repository_dispatch'
+        
+        run: |
+          if ! grep -q "$IMAGE:" "$APP_VARS_PATH"; then
+            echo "$IMAGE is not found in $APP_VARS_PATH"
+            exit 1
+          fi
+
+          sed -i "s|$IMAGE:.*|$IMAGE:$VERSION|" "$APP_VARS_PATH"
+
+          cat "$APP_VARS_PATH"
+
+      - name: Commit updated image
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "Update ${{ env.IMAGE }} to version ${{ env.VERSION }}"
+          branch: main
 
       - name: Setup SSH key
         run: |
@@ -37,4 +52,7 @@ jobs:
 
       - name: Run Ansible command
         run: |
+          umask 077
+          printf '%s' "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault-password
+          
           ansible-playbook playbook.yml

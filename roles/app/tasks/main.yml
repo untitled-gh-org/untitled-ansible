@@ -1,4 +1,9 @@
 ---
+- name: Include vars of vault.yml into vault variable
+  ansible.builtin.include_vars:
+    file: vault.yml
+    name: vault
+
 - name: Create public network
   community.docker.docker_network:
     name: public
@@ -51,3 +56,25 @@
     env:
       VIRTUAL_HOST: "sp.spotfuckingify.com"
       LETSENCRYPT_HOST: "sp.spotfuckingify.com"
+
+- name: Start postgres container
+  community.docker.docker_container:
+    name: db
+    image: postgres:18.3
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: private
+    exposed_ports:
+      - 5432
+    env:
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: "{{ vault.db_password }}"
+      POSTGRES_DB: keycloak
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
