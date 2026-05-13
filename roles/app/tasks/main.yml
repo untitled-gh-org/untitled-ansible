@@ -13,6 +13,7 @@
   community.docker.docker_network:
     name: private
     driver: bridge
+    force: true
 
 - name: Start nginx-proxy container
   community.docker.docker_container:
