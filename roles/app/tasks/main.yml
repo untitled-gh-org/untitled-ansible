@@ -13,7 +13,6 @@
   community.docker.docker_network:
     name: private
     driver: bridge
-    force: true
 
 - name: Start nginx-proxy container
   community.docker.docker_container:
@@ -119,7 +118,7 @@
       --server http://localhost:8080 \
       --realm master \
       --user admin \
-      --password {{ keycloak_admin_password }}
+      --password {{ vault.keycloak_admin_password }}
   changed_when: false
 
 - name: Check realm exists
@@ -132,7 +131,7 @@
 - name: Create realm if not exists
   ansible.builtin.shell: |
     docker exec keycloak /opt/keycloak/bin/kcadm.sh create realms \
-      -s realm={{ keycloak_realm }}
+      -s realm={{ keycloak_realm }} \
       -s enabled=true
   when: realm_check.rc != 0
 
