@@ -46,8 +46,3 @@
     name: docker-compose-plugin
     state: latest
     update_cache: true
-
-- name: Pull Docker image
-  community.docker.docker_image:
-    name: quay.io/keycloak/keycloak:26.6.1
-    source: pull
