@@ -1,4 +1,15 @@
 ---
+- name: Create public network
+  community.docker.docker_network:
+    name: public
+    driver: bridge
+
+- name: Create private network
+  community.docker.docker_network:
+    name: private
+    driver: bridge
+    internal: true
+
 - name: Start nginx-proxy container
   community.docker.docker_container:
     name: nginx-proxy
