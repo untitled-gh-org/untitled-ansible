@@ -1,0 +1,93 @@
+---
+- name: Create keycloak docker context dir
+  ansible.builtin.file:
+    path: "{{ keycloak_build_context }}"
+    state: directory
+
+- name: Copy keycloak/Dockerfile
+  ansible.builtin.copy:
+    src: keycloak/Dockerfile
+    dest: "{{ keycloak_build_context }}/Dockerfile"
+
+- name: Build keycloak image
+  community.docker.docker_image_build:
+    name: "{{ keycloak_image }}"
+    path: "{{ keycloak_build_context }}"
+
+- name: Start keycloak container
+  community.docker.docker_container:
+    name: keycloak
+    image: "{{ keycloak_image }}"
+    command: start --optimized
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: public
+      - name: private
+    exposed_ports:
+      - 8080
+    env:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ vault.keycloak_admin_password }}"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME: "https://auth.{{ domain_name }}"
+      KC_PROXY_HEADERS: "xforwarded"
+      KC_DB: "postgres"
+      KC_DB_URL: "jdbc:postgresql://db:5432/keycloak"
+      KC_DB_USERNAME: "keycloak"
+      KC_DB_PASSWORD: "{{ vault.db_password }}"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      VIRTUAL_HOST: "auth.{{ domain_name }}"
+      VIRTUAL_PORT: "8080"
+      LETSENCRYPT_HOST: "auth.{{ domain_name }}"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c \"exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep 200 <&3\"" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+- name: Login kcadm
+  ansible.builtin.shell: |
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh config credentials \
+      --server http://localhost:8080 \
+      --realm master \
+      --user admin \
+      --password {{ vault.keycloak_admin_password }}
+  changed_when: false
+
+- name: Check realm exists
+  ansible.builtin.shell: |
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh get realms/{{ keycloak_realm }}
+  register: realm_check
+  failed_when: false
+  changed_when: false
+
+- name: Create realm if not exists
+  ansible.builtin.shell: |
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh create realms \
+      -s realm={{ keycloak_realm }} \
+      -s enabled=true
+  when: realm_check.rc != 0
+
+- name: Check client exists
+  ansible.builtin.shell: |
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh get clients \
+      -r {{ keycloak_realm }} \
+      -q clientId={{ vault.keycloak_client_id }}
+  register: client_check
+  failed_when: false
+  changed_when: false
+
+- name: Create client if not exists
+  ansible.builtin.shell: |
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh create clients \
+      -r {{ keycloak_realm }} \
+      -s clientId={{ vault.keycloak_client_id }} \
+      -s enabled=true \
+      -s clientAuthenticatorType=client-secret \
+      -s secret={{ vault.keycloak_client_secret }} \
+      -s 'redirectUris=["https://bff.{{ domain_name }}/login/oauth2/code/{{ bff_registration_id }}"]' \
+      -s 'attributes={"post.logout.redirect.uris":"https://{{ domain_name }}/*", "backchannel.logout.session.required": "true", "backchannel.logout.url": "https://bff.{{ domain_name }}/logout/connect/back-channel/{{ bff_registration_id }}"}' \
+      -i
+  when: client_check.stdout == "[ ]"

@@ -1,0 +1,27 @@
+---
+- name: Start nginx-proxy container
+  community.docker.docker_container:
+    name: nginx-proxy
+    image: nginxproxy/nginx-proxy:1.10
+    restart_policy: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - name: public
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+- name: Start acme-companion container
+  community.docker.docker_container:
+    name: acme-companion
+    image: nginxproxy/acme-companion:2.6
+    restart_policy: unless-stopped
+    networks:
+      - name: public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy

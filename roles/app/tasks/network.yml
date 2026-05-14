@@ -1,0 +1,9 @@
+---
+- name: Create public network
+  community.docker.docker_network:
+    name: public
+
+- name: Create private network
+  community.docker.docker_network:
+    name: private
+    internal: true
