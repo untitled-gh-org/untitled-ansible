@@ -1,7 +1,6 @@
 ---
 domain_name: spotfuckingify.com
 
-keycloak_version: 26.6.0
 keycloak_realm: untitled-bff
 keycloak_issuer_uri: "https://auth.{{ domain_name }}/realms/{{ keycloak_realm }}"
 keycloak_build_context: "/home/{{ ansible_user }}/keycloak"
