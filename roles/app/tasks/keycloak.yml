@@ -13,6 +13,8 @@
   community.docker.docker_image_build:
     name: "{{ keycloak_image }}"
     path: "{{ keycloak_build_context }}"
+    args:
+      KEYCLOAK_VERSION: "{{ keycloak_version }}"
 
 - name: Start keycloak container
   community.docker.docker_container:
