@@ -16,7 +16,7 @@
       -s enabled=true \
       -s clientAuthenticatorType=client-secret \
       -s secret={{ keycloak_client.client_secret }} \
-      -s 'baseUrl={{ keycloak_client.base_url }}'
+      -s 'baseUrl={{ keycloak_client.base_url }}' \
       -s 'redirectUris={{ keycloak_client.redirect_uris | to_json }}' \
       -s 'attributes={
         "post.logout.redirect.uris":"{{ keycloak_client.post_logout_redirect_uris }}", 
