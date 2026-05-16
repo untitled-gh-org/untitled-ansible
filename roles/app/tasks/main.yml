@@ -2,5 +2,4 @@
 - import_tasks: network.yml
 - import_tasks: proxy.yml
 - import_tasks: database.yml
-- import_tasks: keycloak.yml
 - import_tasks: app.yml

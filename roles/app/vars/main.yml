@@ -1,11 +1,6 @@
 ---
 domain_name: spotfuckingify.com
 
-keycloak_realm: untitled-bff
-keycloak_issuer_uri: "https://auth.{{ domain_name }}/realms/{{ keycloak_realm }}"
-keycloak_build_context: "/home/{{ ansible_user }}/keycloak"
-keycloak_image: untitled/keycloak:latest
-
 bff_registration_id: untitled-bff
 
 bff_image: ghcr.io/untitled-gh-org/untitled-bff:a87c1194b677791468784147bda80b337669fded

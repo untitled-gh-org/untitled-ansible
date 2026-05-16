@@ -70,24 +70,8 @@
       -s enabled=true
   when: realm_check.rc != 0
 
-- name: Check client exists
-  ansible.builtin.shell: |
-    docker exec keycloak /opt/keycloak/bin/kcadm.sh get clients \
-      -r {{ keycloak_realm }} \
-      -q clientId={{ vault_keycloak_client_id }}
-  register: client_check
-  failed_when: false
-  changed_when: false
-
-- name: Create client if not exists
-  ansible.builtin.shell: |
-    docker exec keycloak /opt/keycloak/bin/kcadm.sh create clients \
-      -r {{ keycloak_realm }} \
-      -s clientId={{ vault_keycloak_client_id }} \
-      -s enabled=true \
-      -s clientAuthenticatorType=client-secret \
-      -s secret={{ vault_keycloak_client_secret }} \
-      -s 'redirectUris=["https://bff.{{ domain_name }}/login/oauth2/code/{{ bff_registration_id }}"]' \
-      -s 'attributes={"post.logout.redirect.uris":"+", "backchannel.logout.session.required": "true", "backchannel.logout.url": "https://bff.{{ domain_name }}/logout/connect/back-channel/{{ bff_registration_id }}"}' \
-      -i
-  when: client_check.stdout == "[ ]"
+- name: Create keycloak clients
+  ansible.builtin.include_tasks: client.yml
+  loop: "{{ keycloak_clients }}"
+  loop_control:
+    loop_var: keycloak_client
