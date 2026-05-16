@@ -21,6 +21,6 @@
       DB_PASSWORD: "{{ vault_immich_db_password }}"
       DB_USERNAME: "{{ vault_immich_db_username }}"
       DB_DATABASE_NAME: "{{ vault_immich_db_database_name }}"
-      VIRTUAL_HOST: "photos.{{ domain_name }}"
+      VIRTUAL_HOST: "immich.{{ domain_name }}"
       VIRTUAL_PORT: "2283"
-      LETSENCRYPT_HOST: "photos.{{ domain_name }}"
+      LETSENCRYPT_HOST: "immich.{{ domain_name }}"
