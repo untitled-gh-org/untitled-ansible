@@ -11,10 +11,10 @@ keycloak_clients:
     base_url: ""
     home_url: ""
     redirect_uris:
-      - "https://bff.{{ domain_name }}/login/oauth2/code/{{ bff_registration_id }}"
+      - "https://bff.{{ domain_name }}/login/oauth2/code/untitled-bff"
     post_logout_redirect_uris: "https://spotfuckingify.com/*"
     backchannel_logout_session_required: true
-    backchannel_logout_url: "https://bff.{{ domain_name }}/logout/connect/back-channel/{{ bff_registration_id }}"
+    backchannel_logout_url: "https://bff.{{ domain_name }}/logout/connect/back-channel/untitled-bff"
   - client_id: immich-client
     client_secret: "{{ vault_keycloak_client_02_secret }}"
     root_url: ""

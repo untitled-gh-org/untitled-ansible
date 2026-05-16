@@ -46,3 +46,6 @@
     name: docker-compose-plugin
     state: latest
     update_cache: true
+
+- import_tasks: network.yml
+- import_tasks: proxy.yml
