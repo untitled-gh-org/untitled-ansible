@@ -88,6 +88,6 @@
       -s clientAuthenticatorType=client-secret \
       -s secret={{ vault.keycloak_client_secret }} \
       -s 'redirectUris=["https://bff.{{ domain_name }}/login/oauth2/code/{{ bff_registration_id }}"]' \
-      -s 'attributes={"post.logout.redirect.uris":"https://{{ domain_name }}/*", "backchannel.logout.session.required": "true", "backchannel.logout.url": "https://bff.{{ domain_name }}/logout/connect/back-channel/{{ bff_registration_id }}"}' \
+      -s 'attributes={"post.logout.redirect.uris":"+", "backchannel.logout.session.required": "true", "backchannel.logout.url": "https://bff.{{ domain_name }}/logout/connect/back-channel/{{ bff_registration_id }}"}' \
       -i
   when: client_check.stdout == "[ ]"
