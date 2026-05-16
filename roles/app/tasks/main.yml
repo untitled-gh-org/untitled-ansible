@@ -1,3 +1,59 @@
 ---
-- import_tasks: database.yml
-- import_tasks: app.yml
+- name: Start bff container
+  community.docker.docker_container:
+    name: bff
+    image: "{{ bff_image }}"
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: public
+    exposed_ports:
+      - 8081
+    env:
+      BFF_HOME_URL: "https://{{ domain_name }}"
+      BFF_CLIENT_URL: "https://bff.{{ domain_name }}"
+      UNTITLED_API_URI: "http://api:8082"
+      BFF_SESSION_COOKIE_DOMAIN: "{{ domain_name }}"
+      BFF_SESSION_COOKIE_SECURE: "true"
+      KEYCLOAK_ISSUER_URI: "{{ keycloak_issuer_uri }}"
+      KEYCLOAK_CLIENT_ID: "{{ vault_keycloak_client_01_id }}"
+      KEYCLOAK_CLIENT_SECRET: "{{ vault_keycloak_client_01_secret }}"
+      VIRTUAL_HOST: "bff.{{ domain_name }}"
+      VIRTUAL_PORT: "8081"
+      LETSENCRYPT_HOST: "bff.{{ domain_name }}"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+- name: Start api container
+  community.docker.docker_container:
+    name: api
+    image: "{{ api_image }}"
+    state: healthy
+    restart_policy: unless-stopped
+    networks:
+      - name: public
+    exposed_ports:
+      - 8082
+    env:
+      KEYCLOAK_ISSUER_URI: "{{ keycloak_issuer_uri }}"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+- name: Start web container
+  community.docker.docker_container:
+    name: web
+    image: "{{ web_image }}"
+    restart_policy: unless-stopped
+    networks:
+      - name: public
+    exposed_ports:
+      - 80
+    env:
+      VIRTUAL_HOST: "{{ domain_name }}"
+      LETSENCRYPT_HOST: "{{ domain_name }}"

@@ -5,7 +5,7 @@ keycloak_build_context: "/home/{{ ansible_user }}/keycloak"
 keycloak_image: untitled/keycloak:latest
 
 keycloak_clients:
-  - client_id: untitled-bff-client
+  - client_id: "{{ vault_keycloak_client_01_id }}"
     client_secret: "{{ vault_keycloak_client_01_secret }}"
     root_url: ""
     base_url: ""
@@ -15,7 +15,7 @@ keycloak_clients:
     post_logout_redirect_uris: "https://spotfuckingify.com/*"
     backchannel_logout_session_required: true
     backchannel_logout_url: "https://bff.{{ domain_name }}/logout/connect/back-channel/untitled-bff"
-  - client_id: immich-client
+  - client_id: "{{ vault_keycloak_client_02_id }}"
     client_secret: "{{ vault_keycloak_client_02_secret }}"
     root_url: ""
     base_url: ""

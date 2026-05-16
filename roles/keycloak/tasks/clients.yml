@@ -17,6 +17,6 @@
       -s clientAuthenticatorType=client-secret \
       -s secret={{ keycloak_client.client_secret }} \
       -s 'redirectUris={{ keycloak_client.redirect_uris | to_json }}' \
-      -s 'attributes={"post.logout.redirect.uris":"keycloak_client.post_logout_redirect_uris", "backchannel.logout.session.required": "keycloak_client.backchannel_logout_session_required", "backchannel.logout.url": "keycloak_client.backchannel_logout_url"}' \
+      -s 'attributes={"post.logout.redirect.uris":"{{ keycloak_client.post_logout_redirect_uris }}", "backchannel.logout.session.required": "{{ keycloak_client.backchannel_logout_session_required }}", "backchannel.logout.url": "{{ keycloak_client.backchannel_logout_url }}"}' \
       -i
   when: client_check.stdout == "[ ]"

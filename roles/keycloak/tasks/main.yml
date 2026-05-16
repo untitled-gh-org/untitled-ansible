@@ -1,4 +1,6 @@
 ---
+- import_tasks: database.yml
+
 - name: Create keycloak docker context dir
   ansible.builtin.file:
     path: "{{ keycloak_build_context }}"
@@ -71,7 +73,8 @@
   when: realm_check.rc != 0
 
 - name: Create keycloak clients
-  ansible.builtin.include_tasks: client.yml
+  ansible.builtin.include_tasks: clients.yml
   loop: "{{ keycloak_clients }}"
   loop_control:
     loop_var: keycloak_client
+    label: "{{ keycloak_client.client_id }}"
