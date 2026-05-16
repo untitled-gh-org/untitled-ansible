@@ -22,9 +22,9 @@
     networks:
       - name: private
     env:
-      POSTGRES_USER: "{{ vault.db_username }}"
-      POSTGRES_PASSWORD: "{{ vault.db_password }}"
-      POSTGRES_DB: "{{ vault.db_database_name }}"
+      POSTGRES_USER: "{{ vault_immich_db_username }}"
+      POSTGRES_PASSWORD: "{{ vault_immich_db_password }}"
+      POSTGRES_DB: "{{ vault_immich_db_database_name }}"
       POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
       - "{{ db_data_location }}:/var/lib/postgresql/data"

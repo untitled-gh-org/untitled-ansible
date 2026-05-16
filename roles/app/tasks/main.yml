@@ -1,8 +1,4 @@
 ---
-- include_vars:
-    file: vault.yml
-    name: vault
-
 - import_tasks: network.yml
 - import_tasks: proxy.yml
 - import_tasks: database.yml
