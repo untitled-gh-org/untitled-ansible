@@ -6,7 +6,7 @@
 
 - name: Copy keycloak/Dockerfile
   ansible.builtin.copy:
-    src: keycloak/Dockerfile
+    src: Dockerfile
     dest: "{{ keycloak_build_context }}/Dockerfile"
 
 - name: Build keycloak image
