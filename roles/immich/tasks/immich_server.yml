@@ -1,0 +1,26 @@
+---
+- name: Start immich_server container
+  community.docker.docker_container:
+    name: immich_server
+    image: "ghcr.io/immich-app/immich-server:{{ immich_version }}"
+    restart_policy: unless-stopped
+    networks:
+      - name: public
+      - name: private
+    exposed_ports:
+      - 2283
+    volumes:
+      - "{{ upload_location }}:/data"
+      - /etc/localtime:/etc/localtime:ro
+    env:
+      UPLOAD_LOCATION: "{{ upload_location }}"
+      DB_DATA_LOCATION: "{{ db_data_location }}"
+      IMMICH_VERSION: "{{ immich_version }}"
+      REDIS_HOSTNAME: "immich_redis"
+      DB_HOSTNAME: "immich_postgres"
+      DB_PASSWORD: "{{ vault.db_password }}"
+      DB_USERNAME: "{{ vault.db_username }}"
+      DB_DATABASE_NAME: "{{ vault.db_database_name }}"
+      VIRTUAL_HOST: "photos.{{ domain_name }}"
+      VIRTUAL_PORT: "2283"
+      LETSENCRYPT_HOST: "photos.{{ domain_name }}"

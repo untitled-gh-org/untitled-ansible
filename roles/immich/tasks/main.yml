@@ -1,0 +1,7 @@
+---
+- include_vars:
+    file: vault.yml
+    name: vault
+
+- import_tasks: database.yml
+- import_tasks: immich_server.yml
