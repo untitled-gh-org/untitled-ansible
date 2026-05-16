@@ -12,7 +12,7 @@ jobs:
     env:
       IMAGE: ${{ github.event.client_payload.image }}
       VERSION: ${{ github.event.client_payload.version }}
-      APP_VARS_PATH: roles/app/vars/main.yml
+      APP_VARS_PATH: roles/app/defaults/main.yml
     steps:
       - name: Checkout
         uses: actions/checkout@v6
