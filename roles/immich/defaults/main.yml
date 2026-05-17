@@ -1,4 +1,4 @@
 ---
-upload_location: /home/{{ ansible_user }}/immich_library
-db_data_location: /home/{{ ansible_user }}/immich_postgres
+upload_location: "{{ app_data_dir }}/immich/immich_library"
+db_data_location: "{{ app_data_dir }}/immich/immich_postgres"
 immich_version: v2
