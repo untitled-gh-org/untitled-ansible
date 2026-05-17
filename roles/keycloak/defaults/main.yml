@@ -1,5 +1,5 @@
 ---
-keycloak_realm: untitled-bff
+keycloak_realm: untitled
 keycloak_issuer_uri: "https://auth.{{ domain_name }}/realms/{{ keycloak_realm }}"
 keycloak_build_context: "{{ app_data_dir }}/keycloak"
 keycloak_db_data_location: "{{ app_data_dir }}/keycloak/keycloak_postgres"
