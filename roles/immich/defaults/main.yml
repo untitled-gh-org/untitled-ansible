@@ -1,4 +1,4 @@
 ---
-upload_location: "{{ app_data_dir }}/immich/immich_library"
-db_data_location: "{{ app_data_dir }}/immich/immich_postgres"
+immich_upload_location: "{{ app_data_dir }}/immich/immich_library"
+immich_db_data_location: "{{ app_data_dir }}/immich/immich_postgres"
 immich_version: v2

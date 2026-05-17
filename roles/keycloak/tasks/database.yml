@@ -14,7 +14,7 @@
       POSTGRES_PASSWORD: "{{ vault_keycloak_db_password }}"
       POSTGRES_DB: "{{ vault_keycloak_db_database_name }}"
     volumes:
-      - db-data:/var/lib/postgresql
+      - "{{ keycloak_db_data_location }}:/var/lib/postgresql"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s

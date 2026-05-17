@@ -27,5 +27,5 @@
       POSTGRES_DB: "{{ vault_immich_db_database_name }}"
       POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
-      - "{{ db_data_location }}:/var/lib/postgresql/data"
+      - "{{ immich_db_data_location }}:/var/lib/postgresql/data"
     shm_size: 128M

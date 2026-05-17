@@ -10,11 +10,11 @@
     exposed_ports:
       - 2283
     volumes:
-      - "{{ upload_location }}:/data"
+      - "{{ immich_upload_location }}:/data"
       - /etc/localtime:/etc/localtime:ro
     env:
-      UPLOAD_LOCATION: "{{ upload_location }}"
-      DB_DATA_LOCATION: "{{ db_data_location }}"
+      UPLOAD_LOCATION: "{{ immich_upload_location }}"
+      DB_DATA_LOCATION: "{{ immich_db_data_location }}"
       IMMICH_VERSION: "{{ immich_version }}"
       REDIS_HOSTNAME: "immich_redis"
       DB_HOSTNAME: "immich_postgres"
