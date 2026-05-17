@@ -70,7 +70,8 @@
     docker exec keycloak /opt/keycloak/bin/kcadm.sh create realms \
       -s realm={{ keycloak_realm }} \
       -s enabled=true \
-      -s registrationAllowed=true
+      -s registrationAllowed=true \
+      -s webAuthnPolicyPasswordlessPasskeysEnabled=true
   when: realm_check.rc != 0
 
 - name: Create keycloak clients
