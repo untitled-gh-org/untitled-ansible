@@ -29,14 +29,14 @@
     exposed_ports:
       - 8080
     env:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_USERNAME: "{{ vault_keycloak_admin_username }}"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ vault_keycloak_admin_password }}"
       KC_HTTP_ENABLED: "true"
       KC_HOSTNAME: "https://auth.{{ domain_name }}"
       KC_PROXY_HEADERS: "xforwarded"
       KC_DB: "postgres"
-      KC_DB_URL: "jdbc:postgresql://db:5432/keycloak"
-      KC_DB_USERNAME: "keycloak"
+      KC_DB_URL: "jdbc:postgresql://keycloak_postgres:5432/{{ vault_keycloak_db_database_name }}"
+      KC_DB_USERNAME: "{{ vault_keycloak_db_username }}"
       KC_DB_PASSWORD: "{{ vault_keycloak_db_password }}"
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"

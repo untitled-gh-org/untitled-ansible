@@ -1,7 +1,7 @@
 ---
 - name: Start keycloak postgres container
   community.docker.docker_container:
-    name: db
+    name: keycloak_postgres
     image: postgres:18.3
     state: healthy
     restart_policy: unless-stopped
@@ -10,9 +10,9 @@
     exposed_ports:
       - 5432
     env:
-      POSTGRES_USER: "keycloak"
+      POSTGRES_USER: "{{ vault_keycloak_db_username }}"
       POSTGRES_PASSWORD: "{{ vault_keycloak_db_password }}"
-      POSTGRES_DB: "keycloak"
+      POSTGRES_DB: "{{ vault_keycloak_db_database_name }}"
     volumes:
       - db-data:/var/lib/postgresql
     healthcheck:
