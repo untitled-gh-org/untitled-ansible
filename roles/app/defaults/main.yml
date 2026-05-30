@@ -1,4 +1,4 @@
 ---
 bff_image: ghcr.io/untitled-gh-org/untitled-bff:82e517f15bf8f316581d1ca0d70a2caf903c31db
-api_image: ghcr.io/untitled-gh-org/untitled-api:fdda7fabf7956d7a3570f327c71e4eb35360fbac
+api_image: ghcr.io/untitled-gh-org/untitled-api:dbe9beb93abf859f0829c9f90355d7d79d0eb63b
 web_image: ghcr.io/untitled-gh-org/untitled-web:528aa3f175069afda3d6300c1ee135f5f8632696
